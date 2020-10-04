@@ -1,0 +1,22 @@
+.wrapper-for-input{
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+
+}
+.for-input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.input-descr{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.input{
+    width: 400px;
+    height: 40px;
+    padding-left: 10px;
+    font-size: 20px;
+}
