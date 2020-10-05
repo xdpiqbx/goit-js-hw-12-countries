@@ -1,40 +1,42 @@
 import fetchCountries from './fetchCountries';
-import input from '../templates/input.hbs'
-import country from '../templates/country.hbs'
+import tplInput from '../templates/input.hbs'
+import tplCountry from '../templates/country.hbs'
+import tplCountries from '../templates/countries.hbs'
+import tplTooManyCountries from '../templates/countries-notification.hbs'
+import tplCountriesNotFound from '../templates/countries-not-found.hbs'
 const _ = require('lodash')
 
-const marcup = input();
-const wrapperForInput = document.querySelector('.wrapper-for-input');
-wrapperForInput.insertAdjacentHTML("beforeend", marcup)
-const inputRef = document.querySelector('.input')
+const wrapperForInputRef = document.querySelector('.wrapper-for-input');// ссылка на HTML контейнер для input
+const wrapperForQueryResult = document.querySelector('.result-wrapper');// ссылка на HTML контейнер для результата (под input-ом) 
 
+const inputMarcup = tplInput(); // получил разменту input из .hbs
+wrapperForInputRef.insertAdjacentHTML("beforeend", inputMarcup) // вставил input в разметку
+
+const inputRef = document.querySelector('.input') // теперь можно взять ссылку на input
 
 function callbackInput (event){
     let resCounty = event.target.value;
     const res = fetchCountries(resCounty);
     res.then(data => {
         console.log(data)
+        let template = null
         if(data.length > 10){
-            console.log("too many")
+            template = tplTooManyCountries
         }else if(data.length === 1){
-            console.log("1 country")
+            template = tplCountry
         }else if(data.length > 1){
-            console.log("more then 1")
+            template = tplCountries
         }
-        const countryHtml = country(data);
-        const wrapperForQueryResult = document.querySelector('.result-wrapper');
-        wrapperForQueryResult.innerHTML = countryHtml;
+        const marcup = template(data);
+        wrapperForQueryResult.innerHTML = marcup;
+    })
+    .catch(error => {
+        const marcup = tplCountriesNotFound(error)
+        wrapperForQueryResult.innerHTML = marcup
     });
 }
 
 inputRef.addEventListener("input", _.debounce(callbackInput, 500))
-
-
-
-
-
-
-
 
 //https://github.com/goitacademy/javascript-homework/tree/master/homework-12
 
